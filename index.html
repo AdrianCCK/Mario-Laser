@@ -1,0 +1,279 @@
+<html>
+
+<head>
+
+<style>
+
+div{
+background-color: none;
+width: 100px;
+position: absolute;
+}
+
+#sec_div{
+background-color: none;
+color: yellow;
+width: 100px;
+position: absolute;
+left: 1200px;
+top: 400px;
+
+}
+#mario_div{
+background-color: none;
+color: yellow;
+width: 100px;
+position: absolute;
+left: 0px;
+top: 700px;
+
+}
+
+</style>
+
+</head>
+
+<body id="myBody">
+<div>
+<span onclick="javascript:doSomething();"> Hello</span> World! 
+
+</div>
+<div id="sec_div" onclick="javascript:doSomething2();">
+<img src = "Lakitu_Cloud.png" width = "150" />
+</div>
+
+<div id="mario_div" onclick="javascript:doMarioJump();">
+<img src = "mario.png" width = "150" />
+</div>
+
+
+</body>
+
+<script>
+
+
+
+
+class Mario{
+constructor( HTMLElem ){
+		this.elem =HTMLElem; //member variable
+		this._name = "Mario";
+		this._x = 0;
+		this._y = 800;
+		this.oldY = this._y;
+		this._dir = -1;
+		this.timer_obj = null;
+	}
+	
+	_jump( obj){
+		if( obj.y < 800 ){
+			if( obj.y > 700 ){
+				}else{
+				obj._dir = 1;
+				}
+				
+				obj.y+= obj._dir*2;
+			window.setTimeout(obj._jump, 5, obj);
+		}else{
+		window.clearTimeout(obj.timer_obj);
+		obj.timer_obj = null;
+		
+		this.y = this.oldY;
+		}
+	}
+	
+	shootLaser(laserX, laserY){
+		var dY = laserY - this._y;
+		var dX = laserX - this._x;
+		var M = dY/dX;
+		var ctx = canvas.getContext("2d");
+		ctx.fillStyle="#FF0000";
+		for( var i = this._x; i < laserX; i++){
+			 
+			 
+			 var y = M * i + this._y; // y = mx + c
+			 ctx.fillRect(i,y,7,7);
+			 
+		}
+		this.jump();
+	}
+	jump(){
+	
+		this.oldY = this._y;
+		this._y--;
+				
+		
+		
+		
+		this.timer_obj = window.setTimeout(this._jump, 50, this);
+	}
+	
+	
+	get x( ){
+		return this._x;
+	
+	}
+	
+	set x( newX ){
+		this._x = newX;
+			this.elem.style.left = this._x+"px";
+			this.y = ((Math.sin(this._x/40 + Math.random()*2 )*50+600)   );
+	
+	}
+	
+	
+	get y( ){
+		return this._y;
+	
+	}
+	
+	set y( newY ){
+		this._y = newY;
+		this.elem.style.top =  this._y+"px";
+	
+	}
+	
+	
+}
+
+class Cloud{
+// constructor
+	constructor( HTMLElem ){
+		this.elem =HTMLElem; //member variable
+		this._name = "Cloud9";
+		this._x = 0;
+		this._y = 0;
+		this._dir = -1;
+	}
+
+//member functions
+
+	moveTopAndLeft(){
+		if( this._x < 0 ){
+			
+			this._dir = 1;
+			
+		}else if( this._x > 1800 ){
+			this._dir = -1;
+			
+			
+		}
+		
+		
+			this.elem.style.left = (this._x+=2*this._dir)+"px";
+			this.elem.style.top = (6*(Math.sin(this._x/200 ))*50+200)+"px";//+ Math.random()*2 )*50+60)   ) +"px";
+	}
+
+	//mutator / accessor methods
+	get x( ){
+		return this._x;
+	
+	}
+	
+	set x( newX ){
+		this._x = newX;
+			this.elem.style.left = this._x+"px";
+			this.y = ((Math.sin(this._x/40 + Math.random()*2 )*50+600)   );
+	
+	}
+	
+	
+	get y( ){
+		return this._y;
+	
+	}
+	
+	set y( newY ){
+		this._y = newY;
+		this.elem.style.top =  this._y+"px";
+	
+	}
+	
+
+}
+
+
+function doSomething(){
+	alert("You clicked me...");
+
+}
+
+//initialize
+var direction = -1;
+var cx = new Array();
+
+var mario = new Mario( document.getElementById("mario_div") );
+
+	var myObjects = new Array();
+	
+	myObjects[0] = new Cloud( document.getElementById("sec_div") );
+	
+	
+		
+	
+	for(var i = 0; i < 50; i++){ //C++ : for(int i = 0; i < 50; i++){
+	
+		myObjects[i+1] = new Cloud( myObjects[0].elem.cloneNode(true) );
+		myObjects[i+1].x = Math.floor(Math.random()*1000);
+
+		document.getElementById("myBody").appendChild( myObjects[i+1].elem  );
+	}
+	
+	/*var myObj2 = document.getElementById("sec_div2");
+	myObj2.style.left = cx2 + "px";
+	myObj2.style.top = (Math.sin(cx2/40 )*50+600) +"px";
+	
+	var myObj3 = document.getElementById("sec_div3");
+	myObj3.style.left = cx3 + "px";
+	myObj3.style.top = (Math.sin(cx3/40 )*50+600) +"px";
+	*/
+	
+function moveTopAndLeft(){
+
+	//var myObj = document.getElementById("sec_div");
+	
+	for(var i = 0; i < 51; i++){
+	
+		myObjects[i].moveTopAndLeft();
+	}
+	/*
+	myObj2.style.left = (cx2-=2)+"px";
+	myObj2.style.top = (Math.sin(cx2/40 )*50+600) +"px";
+	
+	myObj3.style.left = (cx3-=2)+"px";
+	myObj3.style.top = (Math.sin(cx3/40 )*50+600) +"px";
+	*/
+
+	window.setTimeout(moveTopAndLeft, 20);
+
+}
+
+function doSomething2(){
+	window.setTimeout(moveTopAndLeft, 20);
+
+}
+
+function doMarioJump(){
+	mario.jump();
+
+}
+
+
+
+var canvas = document.createElement("canvas");
+canvas.setAttribute("width", window.innerWidth);
+canvas.setAttribute("height", window.innerHeight);
+canvas.setAttribute("style", "position: absolute; x:0; y:0;z-index:-1");
+document.body.addEventListener('click', function (e){
+	mario.shootLaser(e.x,e.y);
+}, false);
+document.body.appendChild(canvas);
+
+
+
+//alert("I am alive!");
+//alert("I am dead xD!");
+
+</script>
+
+</html>
